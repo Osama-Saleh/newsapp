@@ -6,17 +6,30 @@ import 'package:news_app/cubit/cubit.dart';
 import 'package:news_app/cubit/states.dart';
 import 'package:news_app/layout/news_app.dart';
 import 'package:news_app/network/remote/dio_helper.dart';
+import 'package:news_app/network/remote/local/chach_helper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   DioHelper.init();
-  runApp(MyApp());
+  await CacheHelper.init();
+
+  bool? isDark = CacheHelper.getBool(key: "isDark");
+  // bool? isDark = false;
+
+  runApp(MyApp(isDark!));
 }
 
 class MyApp extends StatelessWidget {
+  final bool isDark;
+  MyApp(this.isDark);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => NewsCubit()..getBusiness(),
+      create: (BuildContext context) => NewsCubit()
+        ..getBusiness()
+        ..changeDarkMode(fromShared: isDark),
       child: BlocConsumer<NewsCubit, NewsStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -71,7 +84,7 @@ class MyApp extends StatelessWidget {
                   ///Using it when # of items BottomNavigationBar more than 3
                   type: BottomNavigationBarType.fixed),
               appBarTheme: AppBarTheme(
-                titleSpacing: 25,
+                  titleSpacing: 25,
                   color: HexColor("082A37"),
                   elevation: 0.0,
                   titleTextStyle: TextStyle(
