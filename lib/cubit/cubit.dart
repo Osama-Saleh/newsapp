@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/business/business.dart';
 import 'package:news_app/cubit/states.dart';
 import 'package:news_app/network/remote/dio_helper.dart';
+import 'package:news_app/network/remote/local/chach_helper.dart';
 import 'package:news_app/science/science.dart';
 import 'package:news_app/setting/setting.dart';
 import 'package:news_app/sports/sports.dart';
@@ -92,8 +93,14 @@ class NewsCubit extends Cubit<NewsStates> {
 
   bool isDark = false;
 
-  void changeDarkMode() {
-    isDark = !isDark;
-    emit(NewChangeModeState());
+  void changeDarkMode({bool? fromShared}) {
+    if (fromShared != null) {
+      isDark = fromShared;
+    } else
+      isDark = !isDark;
+    
+    CacheHelper.putBool(key: "isDark", value: isDark).then((value) {
+      emit(NewChangeModeState());
+    });
   }
 }
