@@ -98,9 +98,29 @@ class NewsCubit extends Cubit<NewsStates> {
       isDark = fromShared;
     } else
       isDark = !isDark;
-    
+
     CacheHelper.putBool(key: "isDark", value: isDark).then((value) {
       emit(NewChangeModeState());
+    });
+  }
+
+  List<dynamic> search = [];
+
+  void getSearch(String value) {
+
+    emit(NewGetSearchLoadState());
+
+    DioHelper.getData(path: "v2/everything", query: {
+      "q": "$value",
+      "apikey": "6b8bf5ca6c83407db71f436fe6f1628c",
+    }).then((value) {
+      search = value.data["articles"];
+      print(value.data["articles"][0]["title"]);
+      print(search[0]["title"]);
+      emit(NewGetSearchSuccessState());
+    }).catchError((onError) {
+      print("Errors$onError");
+      emit(NewGetSearchErrorState(onError));
     });
   }
 }
