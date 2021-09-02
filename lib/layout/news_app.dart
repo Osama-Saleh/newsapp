@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/cubit/cubit.dart';
 import 'package:news_app/cubit/states.dart';
+import 'package:news_app/modules/search/search_screen.dart';
 // import 'package:news_app/network/remote/dio_helper.dart';
 
 class NewsApp extends StatelessWidget {
@@ -19,14 +20,20 @@ class NewsApp extends StatelessWidget {
               title: Text("أخبار اليوم"),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchScreen()),
+                    );
+                      print("The Values is ${NewsCubit.get(context).search}");
+                  },
                   icon: Icon(Icons.search),
                   iconSize: 30,
                 ),
                 IconButton(
                   onPressed: () {
                     NewsCubit.get(context).changeDarkMode();
-                    print(NewsCubit.get(context).isDark);
+                    // print(NewsCubit.get(context).isDark);
                   },
                   icon: Icon(Icons.light_mode),
                   iconSize: 30,
